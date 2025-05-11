@@ -1,0 +1,68 @@
+.hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 4rem 6rem;
+  padding-top: 23vh;
+}
+
+.hero-text {
+  max-width: 600px;
+  margin-inline: auto;
+  text-align: center;
+  z-index: 2;
+  padding-right: 35vw;
+}
+
+.hero-text h1 {
+  font-family: 'Viga', sans-serif;
+  font-size: 6rem;
+  font-weight: 400;
+  line-height: 3.25rem;
+  letter-spacing: 0;
+  color: #4D5A9A;
+  text-align: center;
+  margin: 0;
+
+  text-shadow: 
+    -1px 0 #1F2BB9, 
+     1px 0 #1F2BB9, 
+     0 -1px #1F2BB9, 
+     0 1px #1F2BB9;  
+}
+
+.hero-text hr {
+  border: none;
+  height: 4px;
+  background-color: #4e55a5;
+  width: 100vw;
+  margin: 1.5rem -20rem;
+}
+
+.tagline {
+  font-family: 'Ysabeau SC', sans-serif;
+  font-weight: 300;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: #535050;
+  margin: 0;
+}
+
+
+.hero-image {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hero-image img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
