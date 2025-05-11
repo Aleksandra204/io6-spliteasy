@@ -1,0 +1,17 @@
+# 🔐 Pliki poufne
+.env
+
+# 📦 Katalog z zależnościami
+node_modules/
+
+# 🧹 Różne śmieci systemowe i edytorowe
+.DS_Store
+*.log
+
+# 💾 Pliki tymczasowe
+*.tmp
+*.swp
+*.swo
+
+# 🛠 Visual Studio Code
+.vscode/
