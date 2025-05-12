@@ -6,9 +6,12 @@ async function register(e) {
   const { name, mail, password, confirmPassword } = Object.fromEntries(formData);
   const errorDiv = document.getElementById("error");
   errorDiv.textContent = "";
+  errorDiv.style.display = "none";
+
 
   if (password !== confirmPassword) {
     errorDiv.textContent = "Hasła się nie zgadzają.";
+      errorDiv.style.display = "block";
     return;
   }
 
@@ -26,10 +29,12 @@ async function register(e) {
       window.location.href = "/login.html";
     } else {
       errorDiv.textContent = data.msg || "Błąd rejestracji.";
+      errorDiv.style.display = "block";
     }
   } catch (err) {
     console.error("Register error:", err);
     errorDiv.textContent = "Wystąpił błąd. Spróbuj później.";
+    errorDiv.style.display = "block";
   }
 }
 

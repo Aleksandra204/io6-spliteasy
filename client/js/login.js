@@ -11,6 +11,7 @@ async function login(e) {
   
   const errorDiv = document.getElementById("error");
   errorDiv.textContent = ""; 
+  errorDiv.style.display = "none";
 
   try {
     
@@ -28,11 +29,13 @@ async function login(e) {
       
       const data = await res.json();
       errorDiv.textContent = data.msg || "Nie udało się zalogować.";
+      errorDiv.style.display = "block";
     }
   } catch (err) {
     
     console.error("Login error:", err);
     errorDiv.textContent = "Wystąpił błąd. Spróbuj ponownie później.";
+    errorDiv.style.display = "block";
   }
 }
 
