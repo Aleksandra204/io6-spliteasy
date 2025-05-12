@@ -1,5 +1,5 @@
-// const api_path = ""; 
-const api_path = "http://localhost:2137";
+const api_path = ""; 
+// const api_path = "http://localhost:2137";
 
 
 async function register(e) {
