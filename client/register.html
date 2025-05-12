@@ -6,47 +6,8 @@
 		<title>Rejestracja – Split Easy</title>
 		<link rel="stylesheet" href="css/common.css" />
 		<link rel="stylesheet" href="css/home.css" />
-		<style>
-			.form-container {
-				max-width: 400px;
-				margin: 10vh auto;
-				padding: 2rem;
-				background-color: #f9f9f9;
-				border-radius: 12px;
-				box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-			}
-			h1 {
-				text-align: center;
-				color: #4d5a9a;
-				font-family: "Viga", sans-serif;
-			}
-			label {
-				display: block;
-				margin-top: 1rem;
-				margin-bottom: 0.3rem;
-				font-weight: bold;
-				color: #4d5a9a;
-			}
-			input {
-				width: 100%;
-				padding: 0.6rem;
-				border-radius: 10px;
-				border: 1px solid #ccc;
-				background: #f1f1f1;
-				font-size: 1rem;
-			}
-			.button-group {
-				margin-top: 2rem;
-				display: flex;
-				justify-content: space-between;
-				gap: 1rem;
-			}
-			.error {
-				color: red;
-				font-size: 0.9rem;
-				margin-top: 0.5rem;
-			}
-		</style>
+		<link rel="stylesheet" href="css/register.css" />
+		
 	</head>
 	<body>
 		<header class="navbar">
@@ -83,29 +44,8 @@
 				</form>
 			</div>
 		</main>
-		<script>
-			document
-				.getElementById("register-form")
-				.addEventListener("submit", async (e) => {
-					e.preventDefault();
-					const name = e.target.name.value;
-					const mail = e.target.mail.value;
-					const password = e.target.password.value;
-					const confirmPassword = e.target.confirmPassword.value;
-					const errorDiv = document.getElementById("error");
-					if (password !== confirmPassword) {
-						errorDiv.textContent = "Hasła się nie zgadzają.";
-						return;
-					}
-					const res = await fetch("/register", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ name, mail, password }),
-					});
-					const data = await res.json();
-					alert(data.msg);
-					if (res.status === 201) window.location.href = "/login";
-				});
-		</script>
+
+		<script src="js/register.js"></script>
+	
 	</body>
 </html>

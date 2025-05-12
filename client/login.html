@@ -6,20 +6,8 @@
   <title>Logowanie – Split Easy</title>
   <link rel="stylesheet" href="css/common.css" />
   <link rel="stylesheet" href="css/home.css" />
-  <style>
-    .form-container {
-      max-width: 400px;
-      margin: 10vh auto;
-      padding: 2rem;
-      background-color: #f9f9f9;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
-    }
-    h1 { text-align: center; color: #4D5A9A; font-family: 'Viga', sans-serif; }
-    label { display: block; margin-top: 1rem; margin-bottom: 0.3rem; font-weight: bold; color: #4D5A9A; }
-    input { width: 100%; padding: 0.6rem; border-radius: 10px; border: 1px solid #ccc; background: #f1f1f1; font-size: 1rem; }
-    .button-group { margin-top: 2rem; display: flex; justify-content: space-between; gap: 1rem; }
-  </style>
+  <link rel="stylesheet" href="css/login.css" />
+  
 </head>
 <body>
   <header class="navbar">
@@ -42,6 +30,7 @@
         <input type="email" name="mail" required />
         <label for="password">Hasło</label>
         <input type="password" name="password" required />
+        <div id="error" class="error"></div>
         <div class="button-group">
           <button type="submit" class="button">ZALOGUJ</button>
           <a href="register.html" class="button" style="text-align:center;">ZAREJESTRUJ</a>
@@ -49,21 +38,9 @@
       </form>
     </div>
   </main>
-  <script>
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const mail = e.target.mail.value;
-      const password = e.target.password.value;
-      const res = await fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ mail, password })
-      });
-      const data = await res.json();
-      alert(data.msg);
-      if (res.status === 200) window.location.href = "/home.html";
-    });
-  </script>
+
+<script src="js/login.js"></script>
+
+
 </body>
 </html>
