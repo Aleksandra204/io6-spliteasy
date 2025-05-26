@@ -58,6 +58,6 @@ window.addEventListener('DOMContentLoaded', () => {
   document
     .getElementById('add-group-button')
     .addEventListener('click', () => {
-      window.location.href = 'create-group.html';
+      window.location.href = 'addGroup.html';
     });
 });
