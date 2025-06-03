@@ -15,8 +15,14 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "..", "client")));
 
 const pool = new Pool({
-	connectionString: process.env.DATABASE_URL,
-	ssl: { rejectUnauthorized: false },
+	user: process.env.PGUSER,
+	password: process.env.PGPASSWORD,
+	host: process.env.PGHOST,
+	port: process.env.PGPORT,
+	database: process.env.PGDATABASE,
+	ssl: {
+		rejectUnauthorized: false,
+	},
 });
 
 app.get("/favicon.ico", (req, res) => {
@@ -39,9 +45,10 @@ app.post("/register", async (req, res) => {
 			return res.status(400).json({ msg: "Użytkownik już istnieje" });
 		const hashed = await bcrypt.hash(password, 10);
 		await pool.query(
-			'INSERT INTO "User" (name, mail, password) VALUES ($1, $2, $3)',
-			[name, mail, hashed]
-		);
+            'INSERT INTO "User" (name, mail, password, balans) VALUES ($1, $2, $3, $4)',
+            [name, mail, hashed, 0]
+        );
+
 		res.status(201).json({ msg: "Zarejestrowano pomyślnie" });
 	} catch (err) {
 		console.error(err);
