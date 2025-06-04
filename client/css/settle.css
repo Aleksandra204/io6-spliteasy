@@ -1,0 +1,71 @@
+.settle-page {
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.page-title {
+  font-family: 'Ysabeau SC', sans-serif;
+  font-size: 2.5rem;
+  color: #4A606E;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #4A606E;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+.debtor-list {
+  list-style: none;
+  padding: 0;
+  max-width: 400px;
+  margin: 0 auto 2rem auto;
+  text-align: left;
+}
+
+.debtor-item {
+  background: #f5f5f5;
+  border: 2px solid #4A606E;
+  border-radius: 40px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-family: 'Viga', sans-serif;
+  font-size: 1rem;
+  color: #2D3A44;
+}
+
+.debtor-item label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.debtor-item input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 0.5rem;
+}
+
+.confirm-btn {
+  display: block;
+  margin: 2rem auto 0.5rem auto;
+  padding: 0.75rem 3rem;
+  font-size: 1.25rem;
+  border-radius: 40px;
+  background-color: #4A606E;
+  color: white;
+  border: none;
+}
+
+.cancel-btn {
+  background: none;
+  border: none;
+  color: #4A606E;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
