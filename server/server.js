@@ -12,7 +12,7 @@ const jwtSecret = process.env.JWT_SECRET;
 const port = 2137;
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "..", "client")));
+//app.use(express.static(path.join(__dirname, "..", "client")));
 
 const pool = new Pool({
 	user: process.env.PGUSER,
@@ -29,11 +29,11 @@ app.get("/favicon.ico", (req, res) => {
 	res.status(204).end();
 });
 
-app.get("/:page", (req, res, next) => {
-	const page = req.params.page;
-	if (page.endsWith(".ico")) return next();
-	res.sendFile(path.join(__dirname, "..", "client", `${page}.html`));
-});
+//app.get("/:page", (req, res, next) => {
+//	const page = req.params.page;
+//	if (page.endsWith(".ico")) return next();
+//	res.sendFile(path.join(__dirname, "..", "client", `${page}.html`));
+//});
 
 app.post("/register", async (req, res) => {
 	const { name, mail, password } = req.body;
@@ -329,4 +329,35 @@ app.get("/bills", verifyToken, async (req, res) => {
 		console.error(err);
 		res.status(500).json({ msg: "Błąd serwera (bills)" });
 	}
+});
+
+app.get("/groups", verifyToken, async (req, res) => {
+	const userId = req.user.userId;
+
+	try {
+		const result = await pool.query(
+			`
+			SELECT 
+				g.id, 
+				g.name
+			FROM "Group" g
+			JOIN Group_users gu ON gu.group_id = g.id
+			WHERE gu.user_id = $1
+		`,
+			[userId]
+		);
+
+		res.json(result.rows);
+	} catch (err) {
+		console.error("Błąd pobierania grup:", err.message, err.stack);
+		res.status(500).json({ msg: "Błąd serwera (groups)" });
+	}
+});
+
+app.use(express.static(path.join(__dirname, "..", "client")));
+
+app.get("/:page", (req, res, next) => {
+  const page = req.params.page;
+  if (page.endsWith(".ico")) return next();
+  res.sendFile(path.join(__dirname, "..", "client", `${page}.html`));
 });
