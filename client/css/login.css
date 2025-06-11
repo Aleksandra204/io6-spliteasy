@@ -1,44 +1,117 @@
-.form-container {
-    max-width: 400px;
-    margin: 10vh auto;
-    padding: 2rem;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-h1 {
-    text-align: center;
-    color: #4D5A9A;
-    font-family: 'Viga', sans-serif;
+.card {
+    position: relative;
+    max-width: 1200px;
+    margin: 100px auto;
+    background: #F2F2F2;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 1;
+    border: 3px solid #DDDDDD;
+    font-family: 'Dosis', sans-serif;
 }
 
-label {
-    display: block;
-    margin-top: 1rem;
-    margin-bottom: 0.3rem;
-    font-weight: bold;
-    color: #4D5A9A;
-}
-
-input {
-    width: 100%;
-    padding: 0.6rem;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    background: #f1f1f1;
-    font-size: 1rem;
-}
-
-.button-group {
-    margin-top: 2rem;
+.card__inner {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    align-items: stretch;
 }
 
+.card__col {
+    flex: 1;
+    padding: 40px;
+}
 
+.card__col--right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 3px solid #DDDDDD;
+}
 
+.card__image {
+    max-width: 100%;
+    height: auto;
+}
+
+.card__col--right {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.card__title {
+    font-weight: 500;
+    position: relative;
+    font-size: 40px;
+    color: #455A64;
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    padding-bottom: 15px;
+}
+
+.card__title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: -40px;
+    width: calc(100% + 80px);
+    height: 3px;
+    background-color: #DDDDDD;
+}
+
+.form__group {
+    margin-bottom: 20px;
+}
+
+.form__group label {
+    display: block;
+    color: #FF725E;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form__group input {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 30px;
+    background: #D9D9D9;
+    font-size: 16px;
+}
+
+.wave {
+    position: fixed;
+    display: block;
+    height: auto;
+    pointer-events: none;
+}
+
+.wave--top {
+    width: 30%;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.wave--bottom {
+    width: 70%;
+    bottom: 0;
+    left: 30%;
+    z-index: 0;
+}
+
+.card__col--left .button {
+    display: block;
+    width: 40%;
+    margin: 20px auto 0;
+}
 
 .error {
   margin-top: 1rem;

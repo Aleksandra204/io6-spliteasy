@@ -1,11 +1,12 @@
-const api_path = ""; 
-// const api_path = "http://localhost:2137";
-
+const api_path = "";
 
 async function register(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
-  const { name, mail, password, confirmPassword } = Object.fromEntries(formData);
+  const name = formData.get("username");
+  const mail = formData.get("email");
+  const password = formData.get("password");
+  const confirmPassword = formData.get("password2");
   const errorDiv = document.getElementById("error");
 
   errorDiv.textContent = "";
@@ -13,7 +14,7 @@ async function register(e) {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(mail)) {
-    errorDiv.textContent = "Podaj poprawny adres e-mail.(a@a.a )";
+    errorDiv.textContent = "Podaj poprawny adres e-mail (np. a@a.a)";
     errorDiv.style.display = "block";
     return;
   }
@@ -35,7 +36,7 @@ async function register(e) {
     const data = await res.json();
     if (res.status === 201 || res.ok) {
       alert(data.msg || "Rejestracja zakończona sukcesem.");
-      window.location.href = "/login.html";
+      window.location.href = "login.html";
     } else {
       errorDiv.textContent = data.msg || "Błąd rejestracji.";
       errorDiv.style.display = "block";
@@ -50,4 +51,11 @@ async function register(e) {
 window.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("register-form");
   if (form) form.addEventListener("submit", register);
+
+  const goToLogin = document.getElementById("go-to-login");
+  if (goToLogin) {
+    goToLogin.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+  }
 });

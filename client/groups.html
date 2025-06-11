@@ -1,45 +1,89 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grupy – Split Easy</title>
-  <link rel="stylesheet" href="css/common.css" />
-  <link rel="stylesheet" href="css/groups.css" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Viga&display=swap"
-    rel="stylesheet"
-  />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Ysabeau+SC:ital,wght@0,300&display=swap"
-    rel="stylesheet"
-  />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Split Easy</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/groups.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau+SC:ital,wght@0,300&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
 </head>
+
 <body>
-  <header class="navbar">
-    <img src="assets/logo.svg" alt="Split Easy Logo" class="logo" />
-    <nav>
-      <ul class="nav-links">
-        <li><a href="home.html">HOME</a></li>
-        <li><a href="konto.html">KONTO</a></li>
-        <li><a href="znajomi.html">ZNAJOMI</a></li>
-        <li class="active"><a href="groups.html">GRUPY</a></li>
-        <li><a href="login.html">ZALOGUJ</a></li>
-      </ul>
-    </nav>
-  </header>
+    <script src="js/authGuard.js"></script>
 
-  <main class="groups-page">
-    <h1 class="page-title">TWOJE GRUPY</h1>
+    <header class="navbar">
+        <img src="assets/logo.svg" alt="Split Easy Logo" class="logo" />
+        <nav>
+            <ul class="nav-links">
+                <li><a href="home.html">HOME</a></li>
+                <li><a href="konto.html">KONTO</a></li>
+                <li><a href="znajomi.html">ZNAJOMI</a></li>
+                <li><a href="groups.html">GRUPY</a></li>
+                <li><a href="login.html">ZALOGUJ</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div id="groups-container" class="groups-container">
+    <main class="groups-section">
+        <img src="assets/left_wave.svg" alt="" class="wave wave--left" />
+        <img src="assets/right_wave.svg" alt="" class="wave wave--right" />
+        <img src="assets/background_img.svg" alt="" class="groups__bg" />
+
+        <div class="groups__container">
+            <h2 class="groups__title">TWOJE GRUPY</h2>
+            <div class="groups__cards">
+            </div>
+            <button class="button">DODAJ</button>
+        </div>
+    </main>
+
+    <div id="modal-overlay" class="hidden"></div>
+    <div id="create-group-modal" class="modal hidden">
+        <button class="modal__close">&times;</button>
+        <h2 class="modal__title">UTWÓRZ GRUPĘ</h2>
+        <label for="group-name">NAZWA GRUPY</label>
+        <input id="group-name" type="text" class="modal__input" />
+        <div class="modal__members">
+            <!-- <div class="member">
+                <img src="assets/member_odd.svg" alt="Osoba 1" class="member__icon">
+                <span class="member__name">OSOBA 1</span>
+            </div>
+            <div class="member">
+                <img src="assets/member_even.svg" alt="Osoba 2" class="member__icon">
+                <span class="member__name">OSOBA 2</span>
+            </div> -->
+            <ul id="member-list" class="modal__member-list"></ul>
+
+            <div class="member member--add">
+                <img src="assets/add_member.svg" alt="Dodaj osoby" class="member__icon">
+                <span class="member__name">DODAJ OSOBY</span>
+            </div>
+        </div>
+        <button class="button" id="create-group-btn">UTWÓRZ</button>
     </div>
 
-    <button id="add-group-button" class="button add-group-btn">
-      DODAJ
-    </button>
-  </main>
+    <div id="modal-overlay-2" class="modal-overlay hidden"></div>
+    <div id="modal-add-members" class="modal hidden">
+        <button class="modal__close">&times;</button>
+        <h2 class="modal__title">DODAJ OSOBY</h2>
+        <div class="modal__panel">
+            <h3 class="modal__panel-title">Podaj email</h3>
+            <div class="modal__field">
+                <label for="member-email">Email</label>
+                <input id="member-email" type="email" class="modal__input" />
+            </div>
+        </div>
+        <button class="button" id="add-member-btn">DODAJ</button>
+    </div>
 
-  <script src="js/groups.js"></script>
+    <script src="js/loginHandler.js"></script>
+    <script src="js/groups.js"></script>
 </body>
+
 </html>

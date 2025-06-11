@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Split Easy</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/groupDetails.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau+SC:ital,wght@0,300&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+</head>
+
+<body>
+    <script src="js/authGuard.js"></script>
+    <header class="navbar">
+        <img src="assets/logo.svg" alt="Split Easy Logo" class="logo" />
+        <nav>
+            <ul class="nav-links">
+                <li><a href="home.html">HOME</a></li>
+                <li><a href="konto.html">KONTO</a></li>
+                <li><a href="znajomi.html">ZNAJOMI</a></li>
+                <li><a href="groups.html">GRUPY</a></li>
+                <li><a href="login.html">ZALOGUJ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="group-details">
+        <img src="assets/details_background.svg" alt="" class="group-details__bg">
+
+        <h1 class="group-details__title">FRANCJA</h1>
+
+        <div class="summary-cards">
+            <div class="card card--total-expenses">
+                <img src="assets/wallet.svg" alt="" class="card__icon">
+                <div class="card__text">
+                    <p>Całkowita suma wydatków</p>
+                    <span class="card__value">1634.40 zł</span>
+                </div>
+            </div>
+            <div class="card card--your-debt">
+                <img src="assets/coin.svg" alt="" class="card__icon">
+                <div class="card__text">
+                    <p>Łączna suma Twoich zobowiązań</p>
+                    <span class="card__value">380,00 zł</span>
+                </div>
+            </div>
+            <div class="card card--others-owe">
+                <img src="assets/card.svg" alt="" class="card__icon">
+                <div class="card__text">
+                    <p>Inni łącznie są winni Tobie</p>
+                    <span class="card__value">300,00 zł</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-content">
+            <section class="expenses">
+                <header class="expenses__header">
+                    <h2>Wydatki</h2>
+                    <div class="expenses__actions">
+                        <button class="button">ROZLICZ</button>
+                        <button class="button" id="add-expense-btn">DODAJ</button>
+                    </div>
+                </header>
+                <table class="expenses__table">
+                    <thead>
+                        <tr>
+                            <th>Wydatek</th>
+                            <th>Zapłacił</th>
+                            <th>Data</th>
+                            <th>Cena całkowita</th>
+                            <th>Twój bilans</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hotel z piękną panoramą na górzyste wzgórza</td>
+                            <td>Osoba 1</td>
+                            <td>14 maj, 2025</td>
+                            <td>900,00 zł</td>
+                            <td class="negative">−300,00 zł</td>
+                            <td class="expenses__icons">
+                                <button class="icon-button icon-button--info">i</button>
+                                <button class="icon-button icon-button--delete">🗑</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Hotel z piękną panoramą na górzyste wzgórza</td>
+                            <td>Osoba 1</td>
+                            <td>14 maj, 2025</td>
+                            <td>900,00 zł</td>
+                            <td class="negative">−300,00 zł</td>
+                            <td class="expenses__icons">
+                                <button class="icon-button icon-button--info">i</button>
+                                <button class="icon-button icon-button--delete">🗑</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <aside class="members">
+                <h2 class="members__title">Członkowie grupy <span class="members__count">3</span></h2>
+                <ul class="members__list">
+                    <li class="members__item">
+                        <img src="assets/person_icon.svg" alt="" class="members__icon">
+                        <div class="members__info">
+                            <span class="members__name">Osoba 1</span>
+                            <span class="members__balance">
+                                Masz oddać użytkownikowi Osoba 1:
+                                <span class="balance-value negative">150,00 zł</span>
+                            </span>
+
+                        </div>
+                    </li>
+                    <li class="members__item">
+                        <img src="assets/person_icon.svg" alt="" class="members__icon">
+                        <div class="members__info">
+                            <span class="members__name">Osoba 2</span>
+                            <span class="members__balance">
+                                Użytkownik Osoba 2 ma Tobie oddać:
+                                <span class="balance-value positive">70,00 zł</span>
+                            </span>
+
+                        </div>
+                    </li>
+                    <li class="members__item">
+                        <img src="assets/person_icon.svg" alt="" class="members__icon">
+                        <div class="members__info">
+                            <span class="members__name">Osoba 3 (Ja)</span>
+                        </div>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+    </main>
+
+
+    <div id="modal-overlay" class="hidden"></div>
+
+    <div id="create-expense-modal" class="modal hidden">
+        <button class="modal__close">&times;</button>
+        <h2 class="modal__title">NOWY WYDATEK</h2>
+        <div class="modal__panel">
+            <div class="modal__field">
+                <label for="expense-name">NAZWA WYDATKU</label>
+                <input id="expense-name" type="text" class="modal__input">
+            </div>
+            <div class="modal__field">
+                <label for="amount">KWOTA</label>
+                <input id="amount" type="number" class="modal__input">
+            </div>
+            <div class="modal__choices">
+                <span class="modal__choices-label">Zapłacone przez</span>
+                <button type="button" class="modal__choice modal__choice--active">Ciebie</button>
+                <span class="modal__choices-label">podziel</span>
+                <button type="button" class="modal__choice">po równo</button>
+            </div>
+        </div>
+        <button class="button">DODAJ</button>
+    </div>
+
+
+    <div id="create-edit-modal" class="modal hidden">
+        <button class="modal__close">&times;</button>
+        <h2 class="modal__title">EDYTUJ WYDATEK</h2>
+        <div class="modal__panel">
+            <div class="modal__field">
+                <label for="expense-name">NAZWA WYDATKU</label>
+                <input id="expense-name" type="text" class="modal__input">
+            </div>
+            <div class="modal__field">
+                <label for="amount">KWOTA</label>
+                <input id="amount" type="number" class="modal__input">
+            </div>
+            <div class="modal__choices">
+                <span class="modal__choices-label">Zapłacone przez</span>
+                <button type="button" class="modal__choice modal__choice--active">Osoba 1</button>
+                <span class="modal__choices-label">podziel</span>
+                <button type="button" class="modal__choice">po równo</button>
+            </div>
+        </div>
+        <button class="button">ZAPISZ</button>
+    </div>
+
+    <script src="js/loginHandler.js"></script>
+    <script src="js/groupDetails.js"></script>
+
+</body>
+
+</html>

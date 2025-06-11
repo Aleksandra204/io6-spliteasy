@@ -1,46 +1,61 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Logowanie – Split Easy</title>
-  <link rel="stylesheet" href="css/common.css" />
-  <link rel="stylesheet" href="css/home.css" />
-  <link rel="stylesheet" href="css/login.css" />
-  
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Split Easy</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/login.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau+SC:ital,wght@0,300&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
 </head>
+
 <body>
-  <header class="navbar">
-    <img src="assets/logo.svg" alt="Split Easy Logo" class="logo" />
-    <nav>
-      <ul class="nav-links">
-        <li><a href="home.html">HOME</a></li>
-        <li><a href="konto.html">KONTO</a></li>
-        <li><a href="znajomi.html">ZNAJOMI</a></li>
-        <li><a href="groups.html">GRUPY</a></li>
-        <li><a href="login.html">ZALOGUJ</a></li>
-      </ul>
-    </nav>
-  </header>
-  <main>
-    <div class="form-container">
-      <h1>LOGOWANIE</h1>
-      <form id="login-form">
-        <label for="mail">E-mail</label>
-        <input type="email" name="mail" required />
-        <label for="password">Hasło</label>
-        <input type="password" name="password" required />
-        <div id="error" class="error"></div>
-        <div class="button-group">
-          <button type="submit" class="button">ZALOGUJ</button>
-          <a href="register.html" class="button" style="text-align:center;">ZAREJESTRUJ</a>
+    <header class="navbar">
+        <img src="assets/logo.svg" alt="Split Easy Logo" class="logo" />
+        <nav>
+            <ul class="nav-links">
+                <li><a href="home.html">HOME</a></li>
+                <li><a href="konto.html">KONTO</a></li>
+                <li><a href="znajomi.html">ZNAJOMI</a></li>
+                <li><a href="groups.html">GRUPY</a></li>
+                <li><a href="login.html">ZALOGUJ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="wrapper">
+        <img src="assets/top_wave.svg" alt="" class="wave wave--top">
+        <div class="card">
+            <div class="card__inner">
+                <div class="card__col card__col--left">
+                    <h2 class="card__title">LOGOWANIE</h2>
+                    <form class="form" id="login-form">
+                        <div class="form__group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email" name="email" placeholder="Twój e-mail">
+                        </div>
+                        <div class="form__group">
+                            <label for="password">HASŁO</label>
+                            <input type="password" id="password" name="password" placeholder="Hasło">
+                        </div>
+                        <button type="submit" class="button">ZALOGUJ</button>
+                        <button type="button" class="button" id="register-btn">ZAREJESTRUJ</button>
+                        <div id="error" class="error"></div>
+                    </form>
+                </div>
+                <div class="card__col card__col--right">
+                    <img src="assets/login.svg" alt="ilustracja" class="card__image">
+                </div>
+            </div>
         </div>
-      </form>
-    </div>
-  </main>
-
-<script src="js/login.js"></script>
-
-
+        <img src="assets/bottom_wave.svg" alt="" class="wave wave--bottom">
+    </main>
+    <script src="js/login.js"></script>
 </body>
+
 </html>

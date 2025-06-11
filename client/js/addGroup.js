@@ -3,7 +3,7 @@ const addPersonPopup = document.getElementById('addPersonPopup');
 const emailInput = document.getElementById('emailInput');
 const errorMessage = document.getElementById('errorMessage');
 
-let invitedUsers = []; // Lista użytkowników zaproszonych {id, name}
+let invitedUsers = [];
 
 function openAddPerson() {
   errorMessage.textContent = '';
@@ -36,7 +36,7 @@ async function confirmAddPerson() {
       throw new Error("Nie znaleziono użytkownika.");
     }
 
-    const user = await response.json(); // { id, name }
+    const user = await response.json();
 
 
     if (invitedUsers.some(u => u.id === user.id)) {
@@ -53,7 +53,6 @@ async function confirmAddPerson() {
   }
 }
 
-// Dodanie użytkownika  do listy 
 function addUserToUI(user) {
   const membersDiv = document.querySelector('.members');
   const addBtn = document.querySelector('.member.add');
@@ -68,7 +67,6 @@ function addUserToUI(user) {
   membersDiv.insertBefore(newMember, addBtn);
 }
 
-// Utworzenie grupy po kliknięciu "Utwórz"
 async function createGroup() {
   const groupName = document.getElementById('groupName').value.trim();
 

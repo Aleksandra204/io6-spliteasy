@@ -1,51 +1,69 @@
 <!DOCTYPE html>
-<html lang="pl">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Rejestracja – Split Easy</title>
-		<link rel="stylesheet" href="css/common.css" />
-		<link rel="stylesheet" href="css/home.css" />
-		<link rel="stylesheet" href="css/register.css" />
-		
-	</head>
-	<body>
-		<header class="navbar">
-			<img src="assets/logo.svg" alt="Split Easy Logo" class="logo" />
-			<nav>
-				<ul class="nav-links">
-					<li><a href="home.html">HOME</a></li>
-					<li><a href="konto.html">KONTO</a></li>
-					<li><a href="znajomi.html">ZNAJOMI</a></li>
-					<li><a href="groups.html">GRUPY</a></li>
-					<li><a href="login.html">ZALOGUJ</a></li>
-				</ul>
-			</nav>
-		</header>
-		<main>
-			<div class="form-container">
-				<h1>REJESTRACJA</h1>
-				<form id="register-form">
-					<label for="name">Nazwa użytkownika</label>
-					<input type="text" name="name" required />
-					<label for="mail">E-mail</label>
-					<input type="email" name="mail" required />
-					<label for="password">Hasło</label>
-					<input type="password" name="password" required />
-					<label for="confirmPassword">Powtórz hasło</label>
-					<input type="password" name="confirmPassword" required />
-					<div class="error" id="error"></div>
-					<div class="button-group">
-						<button type="submit" class="button">ZAREJESTRUJ</button>
-						<a href="login.html" class="button" style="text-align: center"
-							>ZALOGUJ</a
-						>
-					</div>
-				</form>
-			</div>
-		</main>
+<html lang="en">
 
-		<script src="js/register.js"></script>
-	
-	</body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Split Easy</title>
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/register.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau+SC:ital,wght@0,300&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+</head>
+
+<body>
+    <header class="navbar">
+        <img src="assets/logo.svg" alt="Split Easy Logo" class="logo" />
+        <nav>
+            <ul class="nav-links">
+                <li><a href="home.html">HOME</a></li>
+                <li><a href="konto.html">KONTO</a></li>
+                <li><a href="znajomi.html">ZNAJOMI</a></li>
+                <li><a href="groups.html">GRUPY</a></li>
+                <li><a href="login.html">ZALOGUJ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="wrapper">
+        <img src="assets/top_wave.svg" alt="" class="wave wave--top">
+        <div class="card">
+            <div class="card__inner">
+                <div class="card__col card__col--left">
+                    <img src="assets/register.svg" alt="ilustracja" class="card__image">
+                </div>
+                <div class="card__col card__col--right">
+                    <h2 class="card__title">REJESTRACJA</h2>
+                    <form class="form" id="register-form">
+                        <div class="form__group">
+                            <label for="username">NAZWA UŻYTKOWNIKA</label>
+                            <input type="text" id="username" name="username" placeholder="Twoja nazwa">
+                        </div>
+                        <div class="form__group">
+                            <label for="email">EMAIL</label>
+                            <input type="email" id="email" name="email" placeholder="Twój e-mail">
+                        </div>
+                        <div class="form__group">
+                            <label for="password">HASŁO</label>
+                            <input type="password" id="password" name="password" placeholder="Hasło">
+                        </div>
+                        <div class="form__group">
+                            <label for="password2">POWTÓRZ HASŁO</label>
+                            <input type="password" id="password2" name="password2" placeholder="Powtórz hasło">
+                        </div>
+                        <div class="error" id="error"></div>
+                        <button type="submit" class="button">ZAREJESTRUJ</button>
+                        <button type="button" class="button" id="go-to-login">ZALOGUJ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <img src="assets/bottom_wave.svg" alt="" class="wave wave--bottom">
+    </main>
+    <script src="js/register.js"></script>
+</body>
+
 </html>
