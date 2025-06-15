@@ -35,6 +35,35 @@ app.get('/favicon.ico', (req, res) => {
 //	res.sendFile(path.join(__dirname, "..", "client", `${page}.html`));
 // });
 
+app.get('/user/me', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const result = await pool.query(
+        'SELECT id, name, mail FROM "User" WHERE id = $1', [userId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({msg: 'Użytkownik nie znaleziony'});
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error('Błąd w /user/me:', err);
+    res.status(500).json({msg: 'Błąd serwera'});
+  }
+});
+
+app.post('/logout', (req, res) => {
+  res.setHeader('Set-Cookie', cookie.serialize('jwtToken', '', {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 0,
+    path: '/'
+  }));
+  res.status(200).json({msg: 'Wylogowano'});
+});
+
+
 app.post('/register', async (req, res) => {
   const {name, mail, password} = req.body;
   try {
@@ -136,14 +165,12 @@ app.post('/group', verifyToken, async (req, res) => {
   try {
     await client.query('BEGIN');
 
-    // Utworzenie grupy
     const groupRes = await client.query(
         'INSERT INTO "Group" (name, owner_user_id) VALUES ($1, $2) RETURNING id',
         [name, ownerId]);
 
     const groupId = groupRes.rows[0].id;
 
-    // Dodanie osób i  właściciela do grupy
     const allUserIds = Array.from(new Set([...userIds, ownerId]));
 
     const insertPromises = allUserIds.map(
@@ -244,6 +271,7 @@ app.get('/groups', verifyToken, async (req, res) => {
 			SELECT 
 				g.id, 
 				g.name
+        g.resolved
 			FROM "Group" g
 			JOIN Group_users gu ON gu.group_id = g.id
 			WHERE gu.user_id = $1
@@ -288,23 +316,6 @@ app.get('/group/:id/details', verifyToken, async (req, res) => {
     });
   } catch (err) {
     console.error('Błąd w /group/:id/details:', err);
-    res.status(500).json({msg: 'Błąd serwera'});
-  }
-});
-
-app.get('/user/me', verifyToken, async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const result = await pool.query(
-        'SELECT id, name, mail FROM "User" WHERE id = $1', [userId]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({msg: 'Użytkownik nie znaleziony'});
-    }
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.error('Błąd w /user/me:', err);
     res.status(500).json({msg: 'Błąd serwera'});
   }
 });

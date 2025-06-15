@@ -123,9 +123,10 @@
     padding: 1rem 2rem;
     z-index: 101;
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-height: 80vh;
+    overflow-y: auto;
     max-width: 800px;
-    max-height: 350px;
     border: 3px solid #E5E5E5;
 }
 
@@ -203,7 +204,7 @@
     align-items: center;
     gap: 0.5rem;
     cursor: default;
-    margin-top: 2.5rem;
+    margin-top: 0.8rem;
 }
 
 .member__icon {
@@ -308,8 +309,41 @@
 .modal__member-list {
     display: flex;
     flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.modal__member-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.modal__member-list .member {
+    flex: 0 1 calc(33.333% - 0.5rem);
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.member__text {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 2rem;
-    max-height: 100px;
-    overflow-y: auto;
+    margin-left: 0.5rem;
+}
+
+.member__email {
+    font-size: 1rem;
+    color: #455A64;
+    line-height: 1.2;
+}
+
+.member__username {
+    font-size: 0.9rem;
+    color: #777;
+    line-height: 1.2;
 }
