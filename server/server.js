@@ -270,7 +270,7 @@ app.get('/groups', verifyToken, async (req, res) => {
         `
 			SELECT 
 				g.id, 
-				g.name
+				g.name,
         g.resolved
 			FROM "Group" g
 			JOIN Group_users gu ON gu.group_id = g.id
