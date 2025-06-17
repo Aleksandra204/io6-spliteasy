@@ -116,3 +116,48 @@ document.getElementById('modal-overlay')?.addEventListener('click', () => {
       modal => modal.classList.add('hidden'));
   document.getElementById('modal-overlay')?.classList.add('hidden');
 });
+
+document.querySelector('#create-expense-modal .button')?.addEventListener('click', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId = urlParams.get('id');
+
+  const nameInput = document.getElementById('expense-name');
+  const amountInput = document.getElementById('amount');
+  const name = nameInput.value.trim();
+  const amount = parseFloat(amountInput.value);
+
+  if (!name || isNaN(amount) || amount <= 0) {
+    alert('Podaj poprawne dane wydatku.');
+    return;
+  }
+
+  try {
+    const userRes = await fetch('/user/me', { credentials: 'include' });
+    const user = await userRes.json();
+
+    const res = await fetch(`/group/${groupId}/expense`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        amount,
+        paidBy: user.id,
+        splitType: 'equal'
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert('Wydatek dodany!');
+      window.location.reload();
+    } else {
+      alert('Błąd: ' + data.msg);
+    }
+  } catch (err) {
+    console.error('Błąd przy dodawaniu wydatku:', err);
+    alert('Nie udało się dodać wydatku.');
+  }
+});
+
