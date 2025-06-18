@@ -320,6 +320,57 @@ app.get('/group/:id/details', verifyToken, async (req, res) => {
   }
 });
 
+app.post('/group/:id/expense', verifyToken, async (req, res) => {
+  const groupId = req.params.id;
+  const { name, amount, paidBy, splitType } = req.body;
+  const userId = req.user.userId;
+
+  if (!name || !amount || !paidBy || !splitType) {
+    return res.status(400).json({ msg: 'Nieprawidłowe dane' });
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const billRes = await client.query(
+  `INSERT INTO bill (group_id, data, price) VALUES ($1, NOW(), $2) RETURNING id`,
+  [groupId, amount]
+  );
+
+    const billId = billRes.rows[0].id;
+
+    await client.query(
+      `INSERT INTO payers (bill_id, user_id, split_price) VALUES ($1, $2, $3)`,
+      [billId, paidBy, amount]
+    );
+
+    const usersRes = await client.query(
+      `SELECT user_id FROM Group_users WHERE group_id = $1`,
+      [groupId]
+    );
+    const userIds = usersRes.rows.map(row => row.user_id);
+    const share = amount / userIds.length;
+
+    const borrowerPromises = userIds.map(uid =>
+      client.query(
+        `INSERT INTO borrowers (bill_id, user_id, split_price) VALUES ($1, $2, $3)`,
+        [billId, uid, share]
+      )
+    );
+    await Promise.all(borrowerPromises);
+
+    await client.query('COMMIT');
+    res.status(201).json({ msg: 'Wydatek dodany', billId });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Błąd dodawania wydatku:', err);
+    res.status(500).json({ msg: 'Błąd serwera' });
+  } finally {
+    client.release();
+  }
+});
+
 app.use(express.static(path.join(__dirname, '..', 'client')));
 
 app.get('/:page', (req, res, next) => {
