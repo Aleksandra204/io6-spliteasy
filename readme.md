@@ -82,7 +82,13 @@ io6-spliteasy/
 │   ├── .gitignore
 │   ├── package.json
 │   ├── server.js
+|   ├── server-test.json
 └── README.md
 ```
 
 ---
+
+## 🧪 Testowanie API – Postman
+
+Do testowania API dołączona jest kolekcja Postmana obecna w 
+io6-spliteasy/server/server-test.json

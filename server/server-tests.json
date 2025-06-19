@@ -1,0 +1,602 @@
+{
+  "info": {
+    "name": "Express API - Testy (Auto Generated)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:2137/register",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test UserUnoDosTresElo\",\n  \"mail\": \"UnoDosTrestestElo@example.com\",\n  \"password\": \"1234\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 201 - zarejestrowano\", function () {",
+              "    pm.response.to.have.status(201);",
+              "    pm.expect(pm.response.json().msg).to.eql(\"Zarejestrowano pomy\u015blnie\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:2137/login",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mail\": \"test@example.com\",\n  \"password\": \"1234\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - zalogowano\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json().msg).to.eql(\"Zalogowano!\");",
+              "});",
+              "let cookieHeader = pm.response.headers.get(\"Set-Cookie\");",
+              "if (cookieHeader) { pm.environment.set(\"jwtCookie\", cookieHeader); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Info (/user/me)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/user/me",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "user",
+            "me"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - dane u\u017cytkownika\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    let json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"id\");",
+              "    pm.expect(json).to.have.property(\"name\");",
+              "    pm.expect(json).to.have.property(\"mail\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/logout",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "logout"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - wylogowano\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json().msg).to.eql(\"Wylogowano\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User by Email",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/user/test@example.com",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "user",
+            "test@example.com"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - dane u\u017cytkownika po mailu\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    let json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"id\");",
+              "    pm.expect(json).to.have.property(\"name\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Group",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:2137/group",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "group"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Grupa Testowa\",\n  \"userIds\": [\n    1\n  ]\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 201 - grupa utworzona\", function () {",
+              "    pm.response.to.have.status(201);",
+              "    pm.expect(pm.response.json()).to.have.property(\"groupId\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Group Bills",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/group/1/bills",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "group",
+            "1",
+            "bills"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - lista rachunk\u00f3w\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Group Balance",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/group/1/balance",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "group",
+            "1",
+            "balance"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - saldo grupy\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    let json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"total_group_spending\");",
+              "    pm.expect(json).to.have.property(\"you_owe_now\");",
+              "    pm.expect(json).to.have.property(\"others_owe_you\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get User's Groups",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/groups",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "groups"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - lista grup\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Group Details",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/group/1/details",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "group",
+            "1",
+            "details"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - szczeg\u00f3\u0142y grupy\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    let json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"name\");",
+              "    pm.expect(json).to.have.property(\"members\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Add Group Expense",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:2137/group/1/expense",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "group",
+            "1",
+            "expense"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Pizza\",\n  \"amount\": 120,\n  \"paidBy\": 1,\n  \"splitType\": \"even\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 201 - dodano wydatek\", function () {",
+              "    pm.response.to.have.status(201);",
+              "    pm.expect(pm.response.json()).to.have.property(\"billId\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Group Settlements",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:2137/group/1/settlements",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "group",
+            "1",
+            "settlements"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - rozliczenia grupy\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Settle Group",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:2137/group/1/settle",
+          "host": [
+            "localhost"
+          ],
+          "port": "2137",
+          "path": [
+            "group",
+            "1",
+            "settle"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userIds\": [\n    1\n  ]\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let cookie = pm.environment.get(\"jwtCookie\");",
+              "if (cookie) {",
+              "    pm.request.headers.add({ key: \"Cookie\", value: cookie });",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 200 - rozliczono\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json().msg).to.eql(\"OK\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
