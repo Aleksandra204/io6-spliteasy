@@ -447,3 +447,45 @@
   height: 20px;
   cursor: pointer;
 }
+
+.split-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1rem;
+}
+.split-tab {
+  flex: 1;
+  padding: 0.75rem;
+  background: #f5f5f5;
+  border: none;
+  cursor: pointer;
+  font-family: 'Dosis', sans-serif;
+}
+.split-tab--active {
+  background: #4CAF50;
+  color: white;
+}
+.split-content .split-pane {
+  max-height: 250px;
+  overflow-y: auto;
+}
+.split-pane.hidden {
+  display: none;
+}
+.split-summary {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+#split-exact-list li,
+#split-percent-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+#split-exact-list li input,
+#split-percent-list li input {
+  width: 60px;
+  text-align: right;
+}

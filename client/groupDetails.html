@@ -158,12 +158,40 @@
                 <span class="modal__choices-label">Zapłacone przez</span>
                 <button id="expense-payer-selector" type="button" class="modal__choice modal__choice--active">Ciebie</button>
                 <span class="modal__choices-label">podziel</span>
-                <button type="button" class="modal__choice">po równo</button>
+                <button id="split-options-selector" type="button" class="modal__choice">po równo</button>
+
             </div>
             <ul id="expense-payer-dropdown" class="modal__choices-list hidden"></ul>
         </div>
         <button class="button">DODAJ</button>
     </div>
+
+<div id="split-options-modal" class="modal hidden">
+  <button class="modal__close">&times;</button>
+  <h2 class="modal__title">OPCJE PODZIAŁU</h2>
+  <div class="modal__panel">
+    <div class="split-tabs">
+      <button data-tab="equal"   class="split-tab split-tab--active">Po równo</button>
+      <button data-tab="exact"   class="split-tab">Dokładne kwoty</button>
+      <button data-tab="percent" class="split-tab">Procentowo</button>
+    </div>
+    <div class="split-content">
+      <div data-content="equal" class="split-pane">
+        <ul id="split-equal-list" class="modal__choices-list"></ul>
+      </div>
+      <div data-content="exact" class="split-pane hidden">
+        <div class="split-summary">0 zł z <span id="total-amount">0</span> zł</div>
+        <ul id="split-exact-list" class="modal__choices-list"></ul>
+      </div>
+      <div data-content="percent" class="split-pane hidden">
+        <div class="split-summary">0% z 100%</div>
+        <ul id="split-percent-list" class="modal__choices-list"></ul>
+      </div>
+    </div>
+  </div>
+  <button id="split-confirm-btn" class="button">WYBIERZ</button>
+</div>
+
 
     <div id="select-payer-modal" class="modal hidden">
   <button class="modal__close">&times;</button>
@@ -207,7 +235,7 @@
                 <span class="modal__choices-label">Zapłacone przez</span>
                 <span id="expense-payer-selector" class="modal__choice modal__choice--active">Ciebie</span>
                 <span class="modal__choices-label">podziel</span>
-                <button type="button" class="modal__choice">po równo</button>
+                <button id="split-options-selector" type="button" class="modal__choice">po równo</button>
             </div>
         </div>
         <button class="button">ZAPISZ</button>

@@ -136,16 +136,29 @@ document.querySelector('#create-expense-modal .button')?.addEventListener('click
     const userRes = await fetch('/user/me', { credentials: 'include' });
     const user = await userRes.json();
 
+    const payload = {
+  name: nameInput.value.trim(),
+  amount,
+  paidBy: expensePayerId || user.id,
+  splitType: currentSplitType,
+  splitValues: (() => {
+    if (currentSplitType === 'equal') {
+      return Array.from(document.querySelectorAll('#split-equal-list .split-eq-cb:checked'))
+                  .map(cb => cb.dataset.id);
+    }
+    if (currentSplitType === 'exact') {
+      return Array.from(document.querySelectorAll('#split-exact-list input'))
+             .map(i => ({ userId: i.dataset.id, amount: parseFloat(i.value)||0 }));
+    }
+    return Array.from(document.querySelectorAll('#split-percent-list input'))
+           .map(i => ({ userId: i.dataset.id, percent: parseFloat(i.value)||0 }));
+  })()
+};
     const res = await fetch(`/group/${groupId}/expense`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        amount,
-        paidBy: user.id,
-        splitType: 'equal'
-      })
+      body: JSON.stringify(payload)
     });
 
     const data = await res.json();
@@ -299,4 +312,119 @@ payerConfirmBtn.addEventListener('click', () => {
     groupMembers.find(m => m.id === Number(expensePayerId)).name;
   selectPayerModal.classList.add('hidden');
   document.getElementById('modal-overlay').classList.add('hidden');
+});
+
+const splitSelector   = document.getElementById('split-options-selector');
+const splitModal      = document.getElementById('split-options-modal');
+const splitOverlay    = document.getElementById('modal-overlay');
+const tabs            = splitModal.querySelectorAll('.split-tab');
+const panes           = splitModal.querySelectorAll('.split-pane');
+const equalList       = document.getElementById('split-equal-list');
+const exactList       = document.getElementById('split-exact-list');
+const percentList     = document.getElementById('split-percent-list');
+const totalAmountEl   = document.getElementById('total-amount');
+
+let currentSplitType = 'equal';
+let totalAmount      = 0;
+
+function renderSplitLists(members) {
+  equalList.innerHTML = '';
+  members.forEach(m => {
+    equalList.insertAdjacentHTML('beforeend', `
+      <li>
+        <img src="assets/person_icon.svg" class="members__icon" alt="">
+        <span class="members__name">${m.name}${m.id===currentUserId?' (Ja)':''}</span>
+        <input type="checkbox" class="split-eq-cb" data-id="${m.id}" checked>
+      </li>
+    `);
+  });
+
+  exactList.innerHTML = '';
+  members.forEach(m => {
+    exactList.insertAdjacentHTML('beforeend', `
+      <li>
+        <img src="assets/person_icon.svg" class="members__icon" alt="">
+        <span class="members__name">${m.name}${m.id===currentUserId?' (Ja)':''}</span>
+        <input
+          type="number"
+          class="split-exact-input"
+          data-id="${m.id}"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+        >
+      </li>
+    `);
+  });
+
+  percentList.innerHTML = '';
+  members.forEach(m => {
+    percentList.insertAdjacentHTML('beforeend', `
+      <li>
+        <img src="assets/person_icon.svg" class="members__icon" alt="">
+        <span class="members__name">${m.name}${m.id===currentUserId?' (Ja)':''}</span>
+        <input
+          type="number"
+          class="split-percent-input"
+          data-id="${m.id}"
+          min="0"
+          max="100"
+          step="1"
+          placeholder="%"
+        >%
+      </li>
+    `);
+  });
+}
+
+splitSelector.addEventListener('click', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId   = urlParams.get('id');
+  totalAmount     = parseFloat(document.getElementById('amount').value) || 0;
+  totalAmountEl.textContent = totalAmount.toFixed(2);
+
+  splitOverlay.classList.remove('hidden');
+  splitModal.classList.remove('hidden');
+
+  equalList.innerHTML   = '<li>Ładowanie…</li>';
+  exactList.innerHTML   = '';
+  percentList.innerHTML = '';
+  let members = [];
+  try {
+    const res = await fetch(`/group/${groupId}/details`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Nie można pobrać członków');
+    const data = await res.json();
+    members = data.members;
+  } catch (e) {
+    equalList.innerHTML = `<li>Błąd: ${e.message}</li>`;
+    return;
+  }
+
+  renderSplitLists(members);
+});
+
+
+tabs.forEach(tab => tab.addEventListener('click', () => {
+  tabs.forEach(t => t.classList.remove('split-tab--active'));
+  tab.classList.add('split-tab--active');
+  currentSplitType = tab.dataset.tab;
+  panes.forEach(p => p.classList.toggle('hidden', p.dataset.content !== currentSplitType));
+}));
+
+exactList.addEventListener('input', () => {
+  const sum = Array.from(exactList.querySelectorAll('input'))
+            .reduce((s,i)=>s+parseFloat(i.value||0),0);
+  splitModal.querySelector('[data-content="exact"] .split-summary')
+            .textContent = `${sum.toFixed(2)} zł z ${totalAmount.toFixed(2)} zł`;
+});
+percentList.addEventListener('input', () => {
+  const sum = Array.from(percentList.querySelectorAll('input'))
+            .reduce((s,i)=>s+parseFloat(i.value||0),0);
+  splitModal.querySelector('[data-content="percent"] .split-summary')
+            .textContent = `${sum.toFixed(0)}% z 100%`;
+});
+
+document.getElementById('split-confirm-btn').addEventListener('click', () => {
+  splitModal.classList.add('hidden');
+  splitOverlay.classList.add('hidden');
 });
