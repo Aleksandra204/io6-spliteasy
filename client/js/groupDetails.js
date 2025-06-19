@@ -161,3 +161,77 @@ document.querySelector('#create-expense-modal .button')?.addEventListener('click
   }
 });
 
+
+document.getElementById('settle-expenses-btn')?.addEventListener('click', async () => {
+  const overlay = document.getElementById('modal-overlay');
+  const modal   = document.getElementById('settle-expenses-modal');
+  overlay.classList.remove('hidden');
+  modal.classList.remove('hidden');
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId   = urlParams.get('id');
+  let list = document.getElementById('settle-list');
+  list.innerHTML = '<li>Ładowanie…</li>';
+
+  try {
+    const res = await fetch(`/group/${groupId}/settlements`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Brak danych');
+    const items = await res.json();
+    list.innerHTML = '';
+    items.forEach(u => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <img src="assets/person_icon.svg" class="members__icon" alt="">
+        <div class="members__info">
+          <span class="members__name">${u.name}</span>
+          <span class="members__balance">
+            ${u.balance < 0
+              ? `Masz oddać użytkownikowi ${u.name}:`
+              : `Użytkownik ${u.name} ma Tobie oddać:`}
+            <span class="balance-value ${u.balance < 0 ? 'negative' : 'positive'}">
+              ${Math.abs(u.balance).toFixed(2)} zł
+            </span>
+          </span>
+        </div>
+        <input type="checkbox" class="settle__checkbox" data-user-id="${u.id}">
+      `;
+      list.appendChild(li);
+    });
+  } catch (e) {
+    list.innerHTML = `<li>Błąd: ${e.message}</li>`;
+  }
+});
+
+document.getElementById('settle-confirm-btn')?.addEventListener('click', async () => {
+  const overlay = document.getElementById('modal-overlay');
+  const modal   = document.getElementById('settle-expenses-modal');
+  const urlParams = new URLSearchParams(window.location.search);
+  const groupId   = urlParams.get('id');
+
+  const checked = Array.from(
+    document.querySelectorAll('#settle-list .settle__checkbox:checked')
+  ).map(cb => cb.dataset.userId);
+
+  if (checked.length === 0) {
+    alert('Wybierz przynajmniej jedno saldo.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/group/${groupId}/settle`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userIds: checked })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.msg || 'Błąd serwera');
+    alert('Rozliczono pomyślnie!');
+    window.location.reload();
+  } catch (e) {
+    alert('Nie udało się rozliczyć: ' + e.message);
+  }
+
+  overlay.classList.add('hidden');
+  modal.classList.add('hidden');
+});

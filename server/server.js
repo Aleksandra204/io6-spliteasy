@@ -371,6 +371,89 @@ app.post('/group/:id/expense', verifyToken, async (req, res) => {
   }
 });
 
+app.get('/group/:id/settlements', verifyToken, async (req, res) => {
+  const groupId = req.params.id;
+  try {
+    const membersRes = await pool.query(
+      `SELECT u.id, u.name
+       FROM "User" u
+       JOIN Group_users gu ON gu.user_id = u.id
+       WHERE gu.group_id = $1`,
+      [groupId]
+    );
+    const members = membersRes.rows;
+
+    const settlements = await Promise.all(members.map(async m => {
+      const oweRes = await pool.query(
+        `SELECT COALESCE(SUM(br.split_price),0) AS owe
+         FROM borrowers br
+         JOIN bill b ON b.id = br.bill_id
+         WHERE b.group_id = $1 AND br.user_id = $2`,
+        [groupId, m.id]
+      );
+      const paidRes = await pool.query(
+        `SELECT COALESCE(SUM(p.split_price),0) AS paid
+         FROM payers p
+         JOIN bill b ON b.id = p.bill_id
+         WHERE b.group_id = $1 AND p.user_id = $2`,
+        [groupId, m.id]
+      );
+      const owe  = Number(oweRes.rows[0].owe);
+      const paid = Number(paidRes.rows[0].paid);
+      return {
+        id:      m.id,
+        name:    m.name,
+        balance: paid - owe
+      };
+    }));
+
+    res.json(settlements);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Błąd serwera (settlements)' });
+  }
+});
+
+app.post('/group/:id/settle', verifyToken, async (req, res) => {
+  const groupId = req.params.id;
+  const { userIds } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    await client.query(
+      `UPDATE borrowers
+         SET split_price = 0
+       WHERE user_id = ANY($1)
+         AND bill_id IN (
+           SELECT id FROM bill WHERE group_id = $2
+         )`,
+      [userIds, groupId]
+    );
+
+    await client.query(
+      `UPDATE payers
+         SET split_price = 0
+       WHERE user_id = ANY($1)
+         AND bill_id IN (
+           SELECT id FROM bill WHERE group_id = $2
+         )`,
+      [userIds, groupId]
+    );
+
+    await client.query('COMMIT');
+    res.json({ msg: 'OK' });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Błąd rozliczania:', err);
+    res.status(500).json({ msg: 'Błąd serwera (settle)' });
+  } finally {
+    client.release();
+  }
+});
+
+
 app.use(express.static(path.join(__dirname, '..', 'client')));
 
 app.get('/:page', (req, res, next) => {

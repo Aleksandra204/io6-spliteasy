@@ -61,7 +61,7 @@
                 <header class="expenses__header">
                     <h2>Wydatki</h2>
                     <div class="expenses__actions">
-                        <button class="button">ROZLICZ</button>
+                        <button class="button" id="settle-expenses-btn">ROZLICZ</button>
                         <button class="button" id="add-expense-btn">DODAJ</button>
                     </div>
                 </header>
@@ -163,6 +163,31 @@
         </div>
         <button class="button">DODAJ</button>
     </div>
+
+    <div id="select-payer-modal" class="modal hidden">
+  <button class="modal__close">&times;</button>
+  <h2 class="modal__title">WYBIERZ PŁACĄCEGO</h2>
+  <div class="modal__panel">
+    <div class="modal__subtitle-row">
+      <span>Wiele osób</span>
+      <img src="assets/arrow_right.svg" alt="" class="modal__subtitle-icon">
+    </div>
+    <ul id="payer-list" class="modal__choices-list">
+    </ul>
+  </div>
+  <button class="button" id="payer-confirm-btn">WYBIERZ</button>
+</div>
+
+<div id="settle-expenses-modal" class="modal hidden">
+  <button class="modal__close">&times;</button>
+  <h2 class="modal__title">ROZLICZ</h2>
+  <div class="modal__panel">
+    <p class="modal__subtitle">Które saldo chcesz rozliczyć?</p>
+    <ul id="settle-list" class="modal__choices-list">
+    </ul>
+  </div>
+  <button class="button" id="settle-confirm-btn">WYBIERZ</button>
+</div>
 
 
     <div id="create-edit-modal" class="modal hidden">
