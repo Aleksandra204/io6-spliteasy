@@ -414,3 +414,36 @@
     height: 20px;
     cursor: pointer;
 }
+
+#select-payer-modal .modal__subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1rem;
+}
+#select-payer-modal .modal__subtitle-icon {
+  width: 20px;
+  height: 20px;
+}
+#select-payer-modal .modal__choices-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+#select-payer-modal .modal__choices-list li .members__icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 1rem;
+}
+#select-payer-modal .modal__choices-list li .members__info {
+  flex: 1;
+}
+#select-payer-modal .modal__choices-list li input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}

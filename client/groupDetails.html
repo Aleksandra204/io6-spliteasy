@@ -156,10 +156,11 @@
             </div>
             <div class="modal__choices">
                 <span class="modal__choices-label">Zapłacone przez</span>
-                <button type="button" class="modal__choice modal__choice--active">Ciebie</button>
+                <button id="expense-payer-selector" type="button" class="modal__choice modal__choice--active">Ciebie</button>
                 <span class="modal__choices-label">podziel</span>
                 <button type="button" class="modal__choice">po równo</button>
             </div>
+            <ul id="expense-payer-dropdown" class="modal__choices-list hidden"></ul>
         </div>
         <button class="button">DODAJ</button>
     </div>
@@ -204,7 +205,7 @@
             </div>
             <div class="modal__choices">
                 <span class="modal__choices-label">Zapłacone przez</span>
-                <button type="button" class="modal__choice modal__choice--active">Osoba 1</button>
+                <span id="expense-payer-selector" class="modal__choice modal__choice--active">Ciebie</span>
                 <span class="modal__choices-label">podziel</span>
                 <button type="button" class="modal__choice">po równo</button>
             </div>

@@ -34,6 +34,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         `${Number(balance.others_owe_you).toFixed(2)} zł`;
 
     const userId = await getLoggedInUserId();
+    currentUserId = userId; 
     const membersList = document.querySelector('.members__list');
     membersList.innerHTML = '';
 
@@ -234,4 +235,68 @@ document.getElementById('settle-confirm-btn')?.addEventListener('click', async (
 
   overlay.classList.add('hidden');
   modal.classList.add('hidden');
+});
+
+const payerSelector    = document.getElementById('expense-payer-selector');
+const selectPayerModal = document.getElementById('select-payer-modal');
+const payerList = selectPayerModal.querySelector('.modal__choices-list');
+const payerConfirmBtn  = document.getElementById('payer-confirm-btn');
+let expensePayerId     = null;
+let groupMembers       = [];
+let currentUserId      = null;
+
+payerSelector.addEventListener('click', async () => {
+  document.getElementById('modal-overlay').classList.remove('hidden');
+  selectPayerModal.classList.remove('hidden');
+
+  if (groupMembers.length === 0) {
+    payerList.innerHTML = '<li>Ładowanie…</li>';
+    try {
+      const groupId = new URLSearchParams(window.location.search).get('id');
+      const res     = await fetch(`/group/${groupId}/details`, { credentials: 'include' });
+      const { members } = await res.json();
+      groupMembers = members;
+      payerList.innerHTML = '';
+      members.forEach(m => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <img src="assets/person_icon.svg" class="members__icon" alt="">
+        <div class="members__info">
+        <span class="members__name">
+          ${m.name}${m.id === currentUserId ? ' (Ja)' : ''}
+        </span>
+        </div>
+        <input type="checkbox" data-user-id="${m.id}">
+      `;
+      payerList.appendChild(li);
+      });
+
+    } catch (e) {
+      payerList.innerHTML = `<li>Błąd: ${e.message}</li>`;
+    }
+  }
+
+  payerList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+  });
+});
+
+payerList.addEventListener('click', e => {
+  if (e.target.tagName === 'INPUT') {
+    payerList.querySelectorAll('input').forEach(cb => cb.checked = false);
+    e.target.checked = true;
+  }
+});
+
+payerConfirmBtn.addEventListener('click', () => {
+  const checked = payerList.querySelector('input:checked');
+  if (!checked) {
+    alert('Wybierz osobę.');
+    return;
+  }
+  expensePayerId = checked.dataset.userId;
+  payerSelector.textContent = 
+    groupMembers.find(m => m.id === Number(expensePayerId)).name;
+  selectPayerModal.classList.add('hidden');
+  document.getElementById('modal-overlay').classList.add('hidden');
 });
