@@ -197,23 +197,25 @@ app.get('/group/:id/bills', verifyToken, async (req, res) => {
 
   try {
     const result = await pool.query(
-        `
+      `
       SELECT 
         b.data,
-        b.price AS total,
-        u.name AS payer,
+        b.price       AS total,
+        b.bill_name   AS description,
+        u.name        AS payer,
         COALESCE(br.split_price, 0) AS your_share
       FROM bill b
-      JOIN payers p ON p.bill_id = b.id
-      JOIN "User" u ON u.id = p.user_id
-      LEFT JOIN borrowers br ON br.bill_id = b.id AND br.user_id = $2
+      JOIN payers p    ON p.bill_id = b.id
+      JOIN "User" u    ON u.id = p.user_id
+      LEFT JOIN borrowers br 
+        ON br.bill_id = b.id AND br.user_id = $2
       WHERE b.group_id = $1
       ORDER BY b.data DESC
       `,
-        [groupId, userId]);
+      [groupId, userId]);
 
     res.json(result.rows.map(row => ({
-                               description: '(brak opisu)',
+                               description: row.description,
                                date: row.data,
                                total: row.total,
                                payer: row.payer,
@@ -334,8 +336,10 @@ app.post('/group/:id/expense', verifyToken, async (req, res) => {
     await client.query('BEGIN');
 
     const billRes = await client.query(
-  `INSERT INTO bill (group_id, data, price) VALUES ($1, NOW(), $2) RETURNING id`,
-  [groupId, amount]
+      `INSERT INTO bill (group_id, data, price, bill_name)
+       VALUES ($1, NOW(), $2, $3)
+       RETURNING id`,
+      [groupId, amount, name]
   );
 
     const billId = billRes.rows[0].id;
