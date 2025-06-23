@@ -209,25 +209,29 @@ document.getElementById('settle-expenses-btn')?.addEventListener('click', async 
   try {
     const res = await fetch(`/group/${groupId}/settlements`, { credentials: 'include' });
     if (!res.ok) throw new Error('Brak danych');
-    const items = await res.json();
+    const settlements = await res.json();
     list.innerHTML = '';
-    items.forEach(u => {
-      if (u.id === currentUserId) return; // pomiń siebie
+
+    if (settlements.length === 0) {
+      list.innerHTML = '<li>Brak rozliczeń do wykonania!</li>';
+      return;
+    }
+
+    settlements.forEach(s => {
+
+
       const li = document.createElement('li');
       li.innerHTML = `
         <img src="assets/person_icon.svg" class="members__icon" alt="">
         <div class="members__info">
-          <span class="members__name">${u.name}</span>
+          <span class="members__name">
+            ${s.from.name} &rarr; ${s.to.name}
+          </span>
           <span class="members__balance">
-            ${u.balance < 0
-              ? `Masz oddać użytkownikowi ${u.name}:`
-              : `Użytkownik ${u.name} ma Tobie oddać:`}
-            <span class="balance-value ${u.balance < 0 ? 'negative' : 'positive'}">
-              ${Math.abs(u.balance).toFixed(2)} zł
-            </span>
+            Kwota: <span class="balance-value">${s.amount.toFixed(2)} zł</span>
           </span>
         </div>
-        <input type="checkbox" class="settle__checkbox" data-user-id="${u.id}">
+        <input type="checkbox" class="settle__checkbox" data-from-id="${s.from.id}" data-to-id="${s.to.id}" data-amount="${s.amount}">
       `;
       list.appendChild(li);
     });
@@ -242,21 +246,27 @@ document.getElementById('settle-confirm-btn')?.addEventListener('click', async (
   const urlParams = new URLSearchParams(window.location.search);
   const groupId   = urlParams.get('id');
 
+  
   const checked = Array.from(
     document.querySelectorAll('#settle-list .settle__checkbox:checked')
-  ).map(cb => cb.dataset.userId);
+  ).map(cb => ({
+    fromId: cb.dataset.fromId,
+    toId: cb.dataset.toId,
+    amount: parseFloat(cb.dataset.amount)
+  }));
 
   if (checked.length === 0) {
-    alert('Wybierz przynajmniej jedno saldo.');
+    alert('Wybierz przynajmniej jedno rozliczenie.');
     return;
   }
 
   try {
+    //lista rozliczeń do rozliczenia
     const res = await fetch(`/group/${groupId}/settle`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userIds: checked })
+      body: JSON.stringify({ settlements: checked })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.msg || 'Błąd serwera');

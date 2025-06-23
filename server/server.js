@@ -397,7 +397,8 @@ app.get('/group/:id/settlements', verifyToken, async (req, res) => {
     );
     const members = membersRes.rows;
 
-    const settlements = await Promise.all(members.map(async m => {
+    // Wylicz salda
+    const balances = await Promise.all(members.map(async m => {
       const oweRes = await pool.query(
         `SELECT COALESCE(SUM(br.split_price),0) AS owe
          FROM borrowers br
@@ -417,9 +418,34 @@ app.get('/group/:id/settlements', verifyToken, async (req, res) => {
       return {
         id:      m.id,
         name:    m.name,
-        balance: paid - owe
+        balance: +(paid - owe).toFixed(2)
       };
     }));
+
+    
+    let debtors = balances.filter(u => u.balance < -0.01).map(u => ({...u, balance: -u.balance})); 
+    let creditors = balances.filter(u => u.balance > 0.01).map(u => ({...u})); 
+
+    const settlements = [];
+
+    // Rozliczanie
+    for (let debtor of debtors) {
+      let toPay = debtor.balance;
+      for (let creditor of creditors) {
+        if (creditor.balance <= 0) continue;
+        const pay = Math.min(toPay, creditor.balance);
+        if (pay > 0.01) {
+          settlements.push({
+            from: { id: debtor.id, name: debtor.name },
+            to:   { id: creditor.id, name: creditor.name },
+            amount: +pay.toFixed(2)
+          });
+          creditor.balance -= pay;
+          toPay -= pay;
+        }
+        if (toPay <= 0.01) break;
+      }
+    }
 
     res.json(settlements);
   } catch (err) {
