@@ -202,6 +202,7 @@ app.get('/group/:id/bills', verifyToken, async (req, res) => {
         b.data,
         b.price       AS total,
         b.bill_name   AS description,
+        p.user_id     AS payer_id,         
         u.name        AS payer,
         COALESCE(br.split_price, 0) AS your_share
       FROM bill b
@@ -215,12 +216,13 @@ app.get('/group/:id/bills', verifyToken, async (req, res) => {
       [groupId, userId]);
 
     res.json(result.rows.map(row => ({
-                               description: row.description,
-                               date: row.data,
-                               total: row.total,
-                               payer: row.payer,
-                               your_share: row.your_share
-                             })));
+  description: row.description,
+  date:        row.data,
+  total:       row.total,
+  payer_id:    row.payer_id,
+  payer:       row.payer,
+  your_share:  row.your_share
+})));
   } catch (err) {
     console.error(err);
     res.status(500).json({msg: 'Błąd serwera (group bills)'});

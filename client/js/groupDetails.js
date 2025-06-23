@@ -62,23 +62,26 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     bills.forEach(bill => {
       const row = document.createElement('tr');
-      const yourBalance =
-          bill.your_share - (bill.total / groupDetails.members.length);
+      const isPayer = bill.payer_id === currentUserId;
 
-      row.innerHTML = `
-        <td>${bill.description}</td>
-        <td>${bill.payer}</td>
-        <td>${new Date(bill.date).toLocaleDateString('pl-PL')}</td>
-        <td>${Number(bill.total).toFixed(2)} zł</td>
-        <td class="${yourBalance < 0 ? 'negative' : 'positive'}">
-          ${yourBalance >= 0 ? '+' : '−'}${
-          Math.abs(yourBalance).toFixed(2)} zł
-        </td>
-        <td class="expenses__icons">
-          <button class="icon-button icon-button--info">i</button>
-          <button class="icon-button icon-button--delete">🗑</button>
-        </td>
-      `;
+const yourBalance = isPayer
+  ? bill.total - bill.your_share
+  : -bill.your_share;
+
+row.innerHTML = `
+  <td>${bill.description}</td>
+  <td>${bill.payer}</td>
+  <td>${new Date(bill.date).toLocaleDateString('pl-PL')}</td>
+  <td>${Number(bill.total).toFixed(2)} zł</td>
+  <td class="${yourBalance < 0 ? 'negative' : 'positive'}">
+    ${yourBalance >= 0 ? '+' : '−'}${Math.abs(yourBalance).toFixed(2)} zł
+  </td>
+  <td class="expenses__icons">
+    <button class="icon-button icon-button--info">i</button>
+    <button class="icon-button icon-button--delete">🗑</button>
+  </td>
+`;
+
       tbody.appendChild(row);
     });
 
