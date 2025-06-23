@@ -235,29 +235,32 @@ app.get('/group/:id/balance', verifyToken, async (req, res) => {
 
   try {
     const result = await pool.query(
-        `
-      WITH group_bills AS (
-        SELECT b.* FROM bill b
-        WHERE b.group_id = $1
-      ),
-      you_owe AS (
-        SELECT COALESCE(SUM(br.split_price), 0) AS total_owe
-        FROM borrowers br
-        JOIN bill b ON b.id = br.bill_id
-        WHERE br.user_id = $2 AND b.group_id = $1
-      ),
-      you_paid AS (
-        SELECT COALESCE(SUM(p.split_price), 0) AS total_paid
-        FROM payers p
-        JOIN bill b ON b.id = p.bill_id
-        WHERE p.user_id = $2 AND b.group_id = $1
-      )
-      SELECT
-        (SELECT COALESCE(SUM(price), 0) FROM group_bills) AS total_group_spending,
-        (SELECT COALESCE(total_owe, 0) FROM you_owe) AS you_owe_now,
-        (SELECT COALESCE(total_paid, 0) FROM you_paid) AS others_owe_you
-      `,
-        [groupId, userId]);
+      `
+  WITH group_bills AS (
+    SELECT b.* FROM bill b
+    WHERE b.group_id = $1
+  ),
+  you_owe AS (
+    SELECT COALESCE(SUM(br.split_price), 0) AS total_owe
+    FROM borrowers br
+    JOIN bill b ON b.id = br.bill_id
+    WHERE br.user_id = $2 AND b.group_id = $1
+  ),
+  others_owe_you AS (
+    SELECT COALESCE(SUM(br.split_price), 0) AS total_others_owe_you
+    FROM borrowers br
+    JOIN bill b ON b.id = br.bill_id
+    WHERE b.group_id = $1 AND b.id IN (
+      SELECT bill_id FROM payers WHERE user_id = $2
+    )
+  )
+  SELECT
+    (SELECT COALESCE(SUM(price), 0) FROM group_bills) AS total_group_spending,
+    (SELECT COALESCE(total_owe, 0) FROM you_owe) AS you_owe_now,
+    (SELECT COALESCE(total_others_owe_you, 0) FROM others_owe_you) AS others_owe_you
+  `,
+  [groupId, userId]
+    );
 
     res.json(result.rows[0]);
   } catch (err) {
@@ -329,9 +332,12 @@ app.post('/group/:id/expense', verifyToken, async (req, res) => {
   const { name, amount, paidBy, splitType } = req.body;
   const userId = req.user.userId;
 
-  if (!name || !amount || !paidBy || !splitType) {
+  if (!name || !amount || !splitType) {
     return res.status(400).json({ msg: 'Nieprawidłowe dane' });
   }
+
+  // Jeśli nie podano paidBy, ustaw na aktualnego użytkownika
+  const payerId = paidBy || userId;
 
   const client = await pool.connect();
   try {
@@ -348,7 +354,7 @@ app.post('/group/:id/expense', verifyToken, async (req, res) => {
 
     await client.query(
       `INSERT INTO payers (bill_id, user_id, split_price) VALUES ($1, $2, $3)`,
-      [billId, paidBy, amount]
+      [billId, payerId, amount]
     );
 
     const usersRes = await client.query(
@@ -358,12 +364,14 @@ app.post('/group/:id/expense', verifyToken, async (req, res) => {
     const userIds = usersRes.rows.map(row => row.user_id);
     const share = amount / userIds.length;
 
-    const borrowerPromises = userIds.map(uid =>
-      client.query(
-        `INSERT INTO borrowers (bill_id, user_id, split_price) VALUES ($1, $2, $3)`,
-        [billId, uid, share]
-      )
-    );
+    const borrowerPromises = userIds
+      .filter(uid => uid !== payerId) // pomiń płacącego
+      .map(uid =>
+        client.query(
+          `INSERT INTO borrowers (bill_id, user_id, split_price) VALUES ($1, $2, $3)`,
+          [billId, uid, share]
+        )
+      );
     await Promise.all(borrowerPromises);
 
     await client.query('COMMIT');

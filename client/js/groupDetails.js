@@ -38,7 +38,18 @@ window.addEventListener('DOMContentLoaded', async () => {
     const membersList = document.querySelector('.members__list');
     membersList.innerHTML = '';
 
+    // Ustaw domyślnie siebie jako płacącego
+    const payerSelector = document.getElementById('expense-payer-selector');
+    if (payerSelector && groupDetails && groupDetails.members) {
+      const me = groupDetails.members.find(m => m.id === currentUserId);
+      if (me) {
+        payerSelector.textContent = me.name + ' (Ja)';
+        expensePayerId = Number(me.id); 
+      }
+    }
+
     groupDetails.members.forEach(member => {
+        if (member.id === currentUserId) return; // pomin siebie
       const li = document.createElement('li');
       li.className = 'members__item';
 
@@ -64,8 +75,13 @@ window.addEventListener('DOMContentLoaded', async () => {
       const row = document.createElement('tr');
       const isPayer = bill.payer_id === currentUserId;
 
+    const groupSize = groupDetails.members.length;
+    const yourShare = bill.total / groupSize;
+
+  
+
 const yourBalance = isPayer
-  ? bill.total - bill.your_share
+  ? bill.total - yourShare
   : -bill.your_share;
 
 row.innerHTML = `
@@ -196,6 +212,7 @@ document.getElementById('settle-expenses-btn')?.addEventListener('click', async 
     const items = await res.json();
     list.innerHTML = '';
     items.forEach(u => {
+      if (u.id === currentUserId) return; // pomiń siebie
       const li = document.createElement('li');
       li.innerHTML = `
         <img src="assets/person_icon.svg" class="members__icon" alt="">
@@ -310,9 +327,9 @@ payerConfirmBtn.addEventListener('click', () => {
     alert('Wybierz osobę.');
     return;
   }
-  expensePayerId = checked.dataset.userId;
+  expensePayerId = Number(checked.dataset.userId); 
   payerSelector.textContent = 
-    groupMembers.find(m => m.id === Number(expensePayerId)).name;
+    groupMembers.find(m => m.id === expensePayerId).name;
   selectPayerModal.classList.add('hidden');
   document.getElementById('modal-overlay').classList.add('hidden');
 });
