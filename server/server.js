@@ -380,14 +380,20 @@ app.get("/group/:id/details", verifyToken, async (req, res) => {
 
 app.post("/group/:id/expense", verifyToken, async (req, res) => {
     const groupId = req.params.id;
-    const { name, amount, paidBy, splitType } = req.body;
+    const { name, amount, paidBy, splitType, splitValues } = req.body;
     const userId = req.user.userId;
 
-    if (!name || !amount || !splitType) {
+    if (
+        !name ||
+        !amount ||
+        !splitType ||
+        !splitValues ||
+        !Array.isArray(splitValues) ||
+        splitValues.length === 0
+    ) {
         return res.status(400).json({ msg: "Nieprawidłowe dane" });
     }
 
-    // Jeśli nie podano paidBy, ustaw na aktualnego użytkownika
     const payerId = paidBy || userId;
 
     const client = await pool.connect();
@@ -396,8 +402,8 @@ app.post("/group/:id/expense", verifyToken, async (req, res) => {
 
         const billRes = await client.query(
             `INSERT INTO bill (group_id, data, price, bill_name)
-       VALUES ($1, NOW(), $2, $3)
-       RETURNING id`,
+             VALUES ($1, NOW(), $2, $3)
+             RETURNING id`,
             [groupId, amount, name]
         );
 
@@ -408,21 +414,17 @@ app.post("/group/:id/expense", verifyToken, async (req, res) => {
             [billId, payerId, amount]
         );
 
-        const usersRes = await client.query(
-            `SELECT user_id FROM Group_users WHERE group_id = $1`,
-            [groupId]
-        );
-        const userIds = usersRes.rows.map((row) => row.user_id);
-        const share = amount / userIds.length;
+        const share = amount / splitValues.length;
 
-        const borrowerPromises = userIds
-            .filter((uid) => uid !== payerId) // pomiń płacącego
+        const borrowerPromises = splitValues
+            .filter((uid) => Number(uid) !== Number(payerId))
             .map((uid) =>
                 client.query(
                     `INSERT INTO borrowers (bill_id, user_id, split_price) VALUES ($1, $2, $3)`,
                     [billId, uid, share]
                 )
             );
+
         await Promise.all(borrowerPromises);
 
         await client.query("COMMIT");
